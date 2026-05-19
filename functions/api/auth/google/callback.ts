@@ -39,19 +39,22 @@ export async function onRequestGet(context: EventContext<Env, string, unknown>) 
 	});
 	const user = await userRes.json<{ email: string; name: string; picture: string }>();
 
-	// Store session in KV (7 days)
+	// Store session in KV (7 days) — no access_token, it expires in 1h anyway
 	const sessionId = crypto.randomUUID();
 	await env.SESSIONS.put(
 		sessionId,
-		JSON.stringify({ access_token: tokens.access_token, user, created_at: Date.now() }),
+		JSON.stringify({ user, created_at: Date.now() }),
 		{ expirationTtl: 604800 }
 	);
+
+	const isLocal = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+	const secureFlag = isLocal ? '' : '; Secure';
 
 	return new Response(null, {
 		status: 302,
 		headers: {
 			Location: '/',
-			'Set-Cookie': `session_id=${sessionId}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=604800`,
+			'Set-Cookie': `session_id=${sessionId}; HttpOnly${secureFlag}; SameSite=Lax; Path=/; Max-Age=604800`,
 		},
 	});
 }
