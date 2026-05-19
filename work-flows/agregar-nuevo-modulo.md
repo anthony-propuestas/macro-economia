@@ -9,10 +9,11 @@ Indicadores actuales: `inflation`, `gdp`, `unemployment`, `debt`, `exchange`.
 ## Checklist de archivos a modificar
 
 ```
-src/lib/indicators/nuevo-indicador.ts   ← 1. Crear archivo de configuración del indicador
-src/lib/indicators/index.ts             ← 2. Importar y registrar en el array indicators
-functions/api/cron/fetch-data.ts        ← 3. Agregar al array de fetch del cron
-functions/api/macro.ts                  ← 4. Agregar a VALID_INDICATORS
+src/lib/indicators/nuevo-indicador.ts       ← 1. Crear archivo de configuración del indicador
+src/lib/indicators/index.ts                 ← 2. Importar y registrar en el array indicators
+src/routes/api/cron/fetch-data/+server.ts   ← 3a. Agregar al array INDICATORS del cron (SvelteKit)
+functions/api/cron/fetch-data.ts            ← 3b. Agregar al array INDICATORS del cron (fallback)
+functions/api/macro.ts                      ← 4. Agregar a VALID_INDICATORS
 ```
 
 `PanelIndicadores.svelte` itera el array `indicators`; `MapaMundo.svelte` usa `indicatorMap` (derivado automáticamente del mismo array en `index.ts`). Ambos se actualizan solos — **no requieren cambios**.
@@ -77,16 +78,27 @@ export const indicators: IndicatorConfig[] = [
 
 ### 3. Agregar al cron de fetch
 
-[functions/api/cron/fetch-data.ts](../functions/api/cron/fetch-data.ts) — array `indicators` dentro de `scheduled()`:
+La lógica de extracción vive en `src/lib/server/fetchIndicator.ts`. Solo hay que agregar la entrada al array `INDICATORS` en **ambos** archivos que lo invocan:
+
+**3a.** [src/routes/api/cron/fetch-data/+server.ts](../src/routes/api/cron/fetch-data/+server.ts) — ruta SvelteKit (principal):
 
 ```ts
-const indicators: { code: string; id: string }[] = [
+const INDICATORS: IndicatorJob[] = [
   { id: 'inflation',       code: 'FP.CPI.TOTL.ZG'   },
   { id: 'gdp',             code: 'NY.GDP.PCAP.CD'    },
   { id: 'unemployment',    code: 'SL.UEM.TOTL.ZS'    },
   { id: 'debt',            code: 'GC.DOD.TOTL.GD.ZS' },
   { id: 'exchange',        code: 'PA.NUS.FCRF'        },
-  { id: 'nuevo_indicador', code: 'XX.XXXX.XXXX.XX'   }, // ← nuevo — mismo id y code que el paso 1
+  { id: 'nuevo_indicador', code: 'XX.XXXX.XXXX.XX'   }, // ← nuevo
+];
+```
+
+**3b.** [functions/api/cron/fetch-data.ts](../functions/api/cron/fetch-data.ts) — fallback de Cloudflare Pages Functions:
+
+```ts
+const INDICATORS: IndicatorJob[] = [
+  // ... mismas entradas + la nueva:
+  { id: 'nuevo_indicador', code: 'XX.XXXX.XXXX.XX'   }, // ← nuevo
 ];
 ```
 

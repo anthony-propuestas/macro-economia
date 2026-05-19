@@ -8,6 +8,7 @@ declare global {
 				SESSIONS: KVNamespace;
 				GOOGLE_CLIENT_ID: string;
 				GOOGLE_CLIENT_SECRET: string;
+				CRON_SECRET: string;
 			};
 		}
 		interface Locals {

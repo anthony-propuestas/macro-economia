@@ -12,9 +12,11 @@ CREATE TABLE IF NOT EXISTS macro_data (
 CREATE INDEX IF NOT EXISTS idx_country ON macro_data (country_code, indicator);
 
 CREATE TABLE IF NOT EXISTS fetch_log (
-  id          INTEGER PRIMARY KEY AUTOINCREMENT,
-  indicator   TEXT,
-  status      TEXT,
-  records     INTEGER,
-  fetched_at  TEXT
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  indicator     TEXT,
+  status        TEXT,
+  records       INTEGER,
+  filtered_out  INTEGER DEFAULT 0,
+  error_message TEXT,
+  fetched_at    TEXT
 );
