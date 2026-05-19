@@ -2,8 +2,6 @@
 
 Ejecutar ante cualquier cambio antes de commitear.
 
-**Estado actual:** Vitest está en `devDependencies` pero **no hay tests configurados ni archivos `.test.ts`** en el proyecto. Este workflow documenta cómo proceder en ambos escenarios.
-
 ---
 
 ## Si los tests aún no están configurados
@@ -62,7 +60,7 @@ Agregar script en `package.json`:
 ### Tipo A — Componente Svelte
 
 **Qué testea:** qué renderiza el componente según sus props.  
-**Archivos objetivo:** `src/lib/components/PanelIndicadores.svelte`, `MapaMundo.svelte`, `GraficaPais.svelte`
+**Archivos objetivo:** [PanelIndicadores.svelte](../src/lib/components/PanelIndicadores.svelte), [MapaMundo.svelte](../src/lib/components/MapaMundo.svelte), [GraficaPais.svelte](../src/lib/components/GraficaPais.svelte)
 
 **Patrón:**
 
@@ -96,7 +94,7 @@ describe('PanelIndicadores', () => {
 ### Tipo B — Módulo TypeScript puro
 
 **Qué testea:** funciones de utilidad, transformaciones de datos, config de indicadores.  
-**Archivos objetivo:** `src/lib/indicators/index.ts`, `src/lib/countryLookup.ts`, `src/lib/api.ts`
+**Archivos objetivo:** [src/lib/indicators/index.ts](../src/lib/indicators/index.ts), [countryLookup.ts](../src/lib/countryLookup.ts), [api.ts](../src/lib/api.ts)
 
 **Patrón:**
 
@@ -109,7 +107,7 @@ describe('indicators config', () => {
     for (const ind of indicators) {
       expect(ind.id).toBeTruthy();
       expect(ind.label).toBeTruthy();
-      expect(ind.code).toMatch(/^[A-Z]{2}\.[A-Z.]+$/);
+      expect(ind.code).toMatch(/^[A-Z0-9]{2,}\.[A-Z0-9.]+$/);
     }
   });
 
@@ -124,7 +122,7 @@ describe('indicators config', () => {
 ### Tipo C — Server function (Cloudflare Pages Function)
 
 **Qué testea:** lógica del handler sin hacer requests reales.  
-**Archivos objetivo:** `functions/api/macro.ts`, `functions/api/auth/`
+**Archivos objetivo:** [macro.ts](../functions/api/macro.ts), [cron/fetch-data.ts](../functions/api/cron/fetch-data.ts), [auth/logout.ts](../functions/api/auth/logout.ts), [auth/google/index.ts](../functions/api/auth/google/index.ts), [auth/google/callback.ts](../functions/api/auth/google/callback.ts)
 
 **Nota:** Las Cloudflare Pages Functions usan la API de Workers (`EventContext`, `D1Database`, `KVNamespace`). Para testearlas hay que mockear esos objetos. Es más complejo — priorizar primero los Tipos A y B.
 
@@ -158,7 +156,15 @@ describe('GET /api/macro', () => {
 
 ## Paso a paso al hacer un cambio
 
-### 1. Identificar qué cambió
+### Si los tests aún no están configurados
+
+Documentar qué se verificó manualmente y bajo qué condiciones. Registrar en el commit message.
+
+---
+
+### Si los tests están activos
+
+#### 1. Identificar qué cambió
 
 ```bash
 git status
@@ -171,14 +177,10 @@ git diff HEAD
 | Archivo modificado | Revisar y actualizar su test hermano |
 | Archivo eliminado | Eliminar su test hermano |
 
-### 2. Correr los tests
+#### 2. Correr los tests
 
 ```bash
 npm test
 ```
 
 Todos deben pasar. Si alguno falla, corregir antes de commitear.
-
-### 3. Sin tests aún
-
-Si el proyecto aún no tiene tests configurados: documentar qué se verificó manualmente y bajo qué condiciones. Registrar en el commit message.

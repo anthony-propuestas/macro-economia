@@ -15,7 +15,7 @@ functions/api/cron/fetch-data.ts        ← 3. Agregar al array de fetch del cro
 functions/api/macro.ts                  ← 4. Agregar a VALID_INDICATORS
 ```
 
-`PanelIndicadores.svelte`, `MapaMundo.svelte` y `GraficaPais.svelte` iteran sobre el array `indicators` — **no requieren cambios**.
+`PanelIndicadores.svelte` itera el array `indicators`; `MapaMundo.svelte` usa `indicatorMap` (derivado automáticamente del mismo array en `index.ts`). Ambos se actualizan solos — **no requieren cambios**.
 
 ---
 
@@ -71,6 +71,8 @@ export const indicators: IndicatorConfig[] = [
 
 `PanelIndicadores.svelte` itera directamente sobre este array — el nuevo indicador aparecerá automáticamente en el panel lateral.
 
+`index.ts` también exporta `indicatorMap = new Map(indicators.map(i => [i.id, i]))` — se construye del mismo array, por lo que el nuevo indicador queda disponible en `MapaMundo` sin pasos adicionales.
+
 ---
 
 ### 3. Agregar al cron de fetch
@@ -111,21 +113,13 @@ Sin este cambio el endpoint `GET /api/macro?indicator=nuevo_indicador` responde 
 npm run dev:cf
 ```
 
+> **Nota:** El endpoint `/api/macro` requiere sesión activa. Para probarlo desde el navegador, navegar a la app con sesión iniciada. Para curl, incluir la cookie de sesión: `curl -b "session=..." http://localhost:5173/api/macro?indicator=nuevo_indicador`
+
 1. El indicador aparece en el panel lateral izquierdo con el label correcto
 2. Si `available: false`, aparece con badge "pronto" y no es clicable (comportamiento esperado)
 3. Si `available: true`, seleccionarlo muestra el mapa — pero el mapa estará vacío hasta que el cron corra
 
-**Forzar fetch manual (datos locales):**
-
-```bash
-# Ejecutar el cron manualmente contra la DB local
-npx wrangler pages dev -- vite dev
-# En otra terminal, hacer una petición al endpoint del cron:
-curl http://localhost:8788/api/cron/fetch-data
-# (requiere que el cron esté expuesto como endpoint HTTP — si no lo está, ejecutar el script directo)
-```
-
-**Alternativa — insertar datos de prueba directamente:**
+**Insertar datos de prueba directamente:**
 
 ```bash
 npx wrangler d1 execute macro-db --local --command \

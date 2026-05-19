@@ -29,7 +29,6 @@ Si ningún `.md` aparece en el output, este workflow no aplica — commitear nor
 | Documento modificado | Código que debe reflejar |
 |---|---|
 | `README.md` | `package.json` (scripts), `wrangler.toml` (bindings, cron), `schema.sql`, `functions/api/` |
-| `macro-observer-plan.md` | Arquitectura general: `src/routes/`, `functions/api/`, `src/lib/` |
 | `work-flows/agregar-nuevo-modulo.md` | Proceso real de agregar un indicador: `src/lib/indicators/`, `functions/api/cron/fetch-data.ts`, `functions/api/macro.ts` |
 | `work-flows/workflow-documentacion.md` | Los archivos que realmente existen y hay que mantener |
 | `work-flows/workflow-tests-post-cambio.md` | El estado real de tests en el proyecto |
@@ -44,22 +43,12 @@ Si ningún `.md` aparece en el output, este workflow no aplica — commitear nor
 | Verificar | Cómo |
 |---|---|
 | Comandos `npm run` | Comparar contra scripts en `package.json` |
-| Variables de entorno | Comparar contra las que usa `functions/api/auth/google.ts` y el `wrangler.toml` |
+| Variables de entorno | Comparar contra las que usa `functions/api/auth/google/index.ts` y el `wrangler.toml` |
 | Bindings (D1, KV) | Comparar contra los bloques `[[d1_databases]]` y `[[kv_namespaces]]` en `wrangler.toml` |
 | Indicadores listados | Comparar contra el array `indicators` en `src/lib/indicators/index.ts` |
 | Endpoints documentados | Comparar contra los archivos en `functions/api/` |
 
 **Señal de discrepancia:** el README menciona un comando que no existe en `package.json`; lista un indicador que fue eliminado de `index.ts`; describe un endpoint con una ruta que ya no existe.
-
----
-
-### `macro-observer-plan.md`
-
-| Verificar | Cómo |
-|---|---|
-| Descripción de la arquitectura | Comparar contra la estructura real de `src/routes/`, `functions/api/`, `src/lib/` |
-| Flujo de autenticación | Comparar contra `functions/api/auth/google.ts` y `functions/api/auth/google/callback.ts` |
-| Flujo de datos | Comparar contra `functions/api/cron/fetch-data.ts` y `functions/api/macro.ts` |
 
 ---
 
