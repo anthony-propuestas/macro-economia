@@ -73,9 +73,9 @@
 			.append('path')
 			.attr('class', 'pais')
 			.attr('d', path as unknown as (d: GeoJSON.Feature) => string)
-			.attr('fill', '#2e3347')
-			.attr('stroke', '#1a1d27')
-			.attr('stroke-width', 0.4)
+			.attr('fill', '#3d5070')
+			.attr('stroke', '#0d1c30')
+			.attr('stroke-width', 0.5)
 			.on('mouseover', (event: MouseEvent, d: GeoJSON.Feature) => {
 				const key = String((d as { id?: unknown }).id).padStart(3, '0');
 				const info = countryLookup.get(key);
@@ -97,7 +97,7 @@
 			})
 			.on('mouseout', (event: MouseEvent) => {
 				tooltip = { ...tooltip, visible: false };
-				d3.select(event.currentTarget as SVGPathElement).attr('stroke', '#1a1d27').attr('stroke-width', 0.4);
+				d3.select(event.currentTarget as SVGPathElement).attr('stroke', '#0d1c30').attr('stroke-width', 0.5);
 			})
 			.on('click', (_event: MouseEvent, d: GeoJSON.Feature) => {
 				const key = String((d as { id?: unknown }).id).padStart(3, '0');
@@ -109,7 +109,9 @@
 	});
 </script>
 
-<svg bind:this={svgEl} class="world-map" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet"></svg>
+<svg bind:this={svgEl} class="world-map" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet">
+	<rect width="960" height="500" fill="#0d1c30"/>
+</svg>
 
 {#if tooltip.visible}
 	<div class="tooltip" style="left:{tooltip.x}px; top:{tooltip.y}px">
