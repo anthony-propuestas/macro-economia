@@ -12,6 +12,4 @@ binding = "SESSIONS"
 id = "0604466813d34727ac7e1827e92eb93d"
 preview_id = "dc99ad097771478fb7a508abf12f3769"   # run: wrangler kv namespace create SESSIONS --preview
 
-[triggers]
-crons = ["0 3 * * *"]
 
