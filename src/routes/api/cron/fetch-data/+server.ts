@@ -1,44 +1,36 @@
-import type { EventContext, D1Database } from '@cloudflare/workers-types';
+import type { RequestHandler } from './$types';
+import type { D1Database } from '@cloudflare/workers-types';
 
-interface Env {
-	DB: D1Database;
-	CRON_SECRET: string;
-}
-
-export async function onRequestGet(context: EventContext<Env, string, unknown>) {
-	const { request, env } = context;
-	const url = new URL(request.url);
+export const GET: RequestHandler = async ({ platform, url }) => {
+	const db = platform?.env?.DB as D1Database | undefined;
+	const cronSecret = platform?.env?.CRON_SECRET as string | undefined;
 	const token = url.searchParams.get('token');
 
-	if (!env.CRON_SECRET || token !== env.CRON_SECRET) {
+	if (!cronSecret || token !== cronSecret) {
 		return new Response('Forbidden', { status: 403 });
 	}
 
-	await scheduled({} as ScheduledEvent, env, {} as ExecutionContext);
-	return Response.json({ ok: true });
-}
+	if (!db) {
+		return Response.json({ error: 'DB no disponible' }, { status: 503 });
+	}
 
-export async function scheduled(
-	_event: ScheduledEvent,
-	env: Env,
-	_ctx: ExecutionContext
-) {
-	const indicators: { code: string; id: string }[] = [
-		{ id: 'inflation',    code: 'FP.CPI.TOTL.ZG' },
-		{ id: 'gdp',          code: 'NY.GDP.PCAP.CD'  },
-		{ id: 'unemployment', code: 'SL.UEM.TOTL.ZS'  },
-		{ id: 'debt',         code: 'GC.DOD.TOTL.GD.ZS'},
-		{ id: 'exchange',     code: 'PA.NUS.FCRF'      },
+	const indicators = [
+		{ id: 'inflation',    code: 'FP.CPI.TOTL.ZG'   },
+		{ id: 'gdp',          code: 'NY.GDP.PCAP.CD'    },
+		{ id: 'unemployment', code: 'SL.UEM.TOTL.ZS'   },
+		{ id: 'debt',         code: 'GC.DOD.TOTL.GD.ZS' },
+		{ id: 'exchange',     code: 'PA.NUS.FCRF'        },
 	];
 
 	for (const { code, id } of indicators) {
-		await fetchIndicator(env.DB, code, id);
+		await fetchIndicator(db, code, id);
 	}
-}
+
+	return Response.json({ ok: true });
+};
 
 async function fetchIndicator(db: D1Database, wbCode: string, indicatorId: string) {
 	const url = `https://api.worldbank.org/v2/country/all/indicator/${wbCode}?format=json&per_page=500&mrv=5`;
-
 	const res = await fetch(url);
 	const [, data] = await res.json<[unknown, WorldBankEntry[]]>();
 
@@ -66,7 +58,6 @@ async function fetchIndicator(db: D1Database, wbCode: string, indicatorId: strin
 	if (!batch.length) return;
 
 	await db.batch(batch);
-
 	await db.prepare(
 		`INSERT INTO fetch_log (indicator, status, records, fetched_at) VALUES (?, 'ok', ?, ?)`
 	).bind(indicatorId, batch.length, now).run();
