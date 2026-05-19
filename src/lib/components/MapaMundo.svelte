@@ -5,6 +5,7 @@
 	import type { Topology } from 'topojson-specification';
 	import { countryLookup } from '$lib/countryLookup';
 	import { fetchChoroplethData } from '$lib/api';
+	import { indicatorMap } from '$lib/indicators/index';
 
 	let { indicator = 'inflation', onCountrySelect }: {
 		indicator?: string;
@@ -19,9 +20,10 @@
 	const WORLD_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
 	function buildColorScale(values: number[]) {
+		const config = indicatorMap.get(indicator);
 		const max = Math.max(...values, 1);
-		return d3.scaleSequential(d3.interpolateRdYlGn)
-			.domain([max, 0]); // red = high inflation, green = low
+		const domain: [number, number] = config?.colorHigh === 'good' ? [0, max] : [max, 0];
+		return d3.scaleSequential(d3.interpolateRdYlGn).domain(domain);
 	}
 
 	function updateFill() {
@@ -112,7 +114,7 @@
 {#if tooltip.visible}
 	<div class="tooltip" style="left:{tooltip.x}px; top:{tooltip.y}px">
 		<strong>{tooltip.nombre}</strong>
-		<span>Inflación: {tooltip.valor}{tooltip.valor !== 'Sin datos' ? '%' : ''}</span>
+		<span>{indicatorMap.get(indicator)?.label ?? indicator}: {tooltip.valor}{tooltip.valor !== 'Sin datos' ? (indicatorMap.get(indicator)?.unit ?? '') : ''}</span>
 	</div>
 {/if}
 

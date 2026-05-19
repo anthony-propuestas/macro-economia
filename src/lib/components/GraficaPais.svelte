@@ -2,6 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler } from 'chart.js';
 	import { fetchCountryData } from '$lib/api';
+	import { indicatorMap } from '$lib/indicators/index';
 
 	Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
 
@@ -31,7 +32,7 @@
 				data: {
 					labels,
 					datasets: [{
-						label: ind === 'inflation' ? 'Inflación (%)' : ind,
+						label: (() => { const c = indicatorMap.get(ind); return c ? `${c.label}${c.unit ? ' (' + c.unit + ')' : ''}` : ind; })(),
 						data: values,
 						borderColor: '#3b82f6',
 						backgroundColor: 'rgba(59,130,246,0.1)',
@@ -67,7 +68,7 @@
 <div class="chart-panel">
 	<div class="chart-header">
 		<span class="country-name">{name}</span>
-		<span class="indicator-label">{indicator === 'inflation' ? 'Inflación histórica' : indicator}</span>
+		<span class="indicator-label">{indicatorMap.get(indicator)?.label ?? indicator} histórica</span>
 	</div>
 	{#if loading}
 		<div class="state">Cargando…</div>

@@ -1,16 +1,10 @@
 <script lang="ts">
+	import { indicators } from '$lib/indicators/index';
+
 	let { active = 'inflation', onChange }: {
 		active?: string;
 		onChange?: (indicator: string) => void;
 	} = $props();
-
-	const indicators = [
-		{ id: 'inflation',   label: 'Inflación',       code: 'FP.CPI.TOTL.ZG', available: true  },
-		{ id: 'gdp',         label: 'PIB per cápita',  code: 'NY.GDP.PCAP.CD',  available: false },
-		{ id: 'unemployment',label: 'Desempleo',        code: 'SL.UEM.TOTL.ZS',  available: false },
-		{ id: 'debt',        label: 'Deuda/PIB',        code: 'GC.DOD.TOTL.GD.ZS',available: false},
-		{ id: 'exchange',    label: 'Tipo de cambio',   code: 'PA.NUS.FCRF',     available: false },
-	];
 </script>
 
 <div class="panel">
