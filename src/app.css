@@ -1,0 +1,67 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0f1117;
+  --bg-2: #1a1d27;
+  --bg-3: #242736;
+  --border: #2e3347;
+  --text: #e2e8f0;
+  --text-muted: #8892a4;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --danger: #ef4444;
+  --success: #22c55e;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); }
+
+nav.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
+
+nav.main-nav .brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+  flex: 1;
+}
+
+nav.main-nav .user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+nav.main-nav img.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+nav.main-nav a.logout {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+nav.main-nav a.logout:hover { color: var(--text); border-color: var(--text-muted); }

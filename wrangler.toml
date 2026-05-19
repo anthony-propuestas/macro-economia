@@ -1,0 +1,13 @@
+name = "macro-observer"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = ".svelte-kit/cloudflare"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "macro-db"
+database_id = "c50f3196-4ed6-46d1-a87f-81450c58d36a"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "0604466813d34727ac7e1827e92eb93d"
+
