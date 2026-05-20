@@ -1,5 +1,5 @@
 import type { EventContext, D1Database } from '@cloudflare/workers-types';
-import { fetchIndicator, type IndicatorJob } from '../../src/lib/server/fetchIndicator';
+import { fetchIndicator, type IndicatorJob } from '../../../src/lib/server/fetchIndicator';
 
 interface Env {
 	DB: D1Database;
@@ -7,15 +7,19 @@ interface Env {
 }
 
 const INDICATORS: IndicatorJob[] = [
-	{ id: 'inflation',    code: 'FP.CPI.TOTL.ZG'    },
-	{ id: 'gdp',          code: 'NY.GDP.PCAP.CD'     },
-	{ id: 'unemployment', code: 'SL.UEM.TOTL.ZS'    },
-	{ id: 'debt',         code: 'GC.DOD.TOTL.GD.ZS' },
-	{ id: 'exchange',     code: 'PA.NUS.FCRF'         },
+	{ id: 'inflation',       code: 'FP.CPI.TOTL.ZG'    },
+	{ id: 'gdp',             code: 'NY.GDP.PCAP.CD'     },
+	{ id: 'unemployment',    code: 'SL.UEM.TOTL.ZS'    },
+	{ id: 'debt',            code: 'GC.DOD.TOTL.GD.ZS' },
+	{ id: 'exchange',        code: 'PA.NUS.FCRF'        },
+	{ id: 'current_account', code: 'BN.CAB.XOKA.GD.ZS' },
+	{ id: 'fiscal_balance',  code: 'GC.NLD.TOTL.GD.ZS' },
+	{ id: 'reserves',        code: 'FI.RES.TOTL.MO'    },
+	{ id: 'fdi_inflows',     code: 'BX.KLT.DINV.CD.WD' },
 ];
 
 async function runFetch(db: D1Database): Promise<void> {
-	await Promise.allSettled(INDICATORS.map(({ id, code }) => fetchIndicator(db, code, id)));
+	await Promise.allSettled(INDICATORS.map((job) => fetchIndicator(db, job.code, job.id)));
 }
 
 export async function onRequestGet(context: EventContext<Env, string, unknown>) {

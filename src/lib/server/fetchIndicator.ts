@@ -3,6 +3,7 @@ import type { D1Database } from '@cloudflare/workers-types';
 export interface IndicatorJob {
 	id: string;
 	code: string;
+	api?: 'world_bank' | 'imf' | 'oecd';
 }
 
 interface WorldBankMeta {

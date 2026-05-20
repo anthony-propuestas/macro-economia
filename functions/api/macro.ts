@@ -3,7 +3,7 @@ import type { EventContext, KVNamespace, D1Database } from '@cloudflare/workers-
 export async function onRequestGet(context: EventContext<Env, string, unknown>) {
 	const { request, env } = context;
 	const url = new URL(request.url);
-	const VALID_INDICATORS = ['inflation', 'gdp', 'unemployment', 'debt', 'exchange'];
+	const VALID_INDICATORS = ['inflation', 'gdp', 'unemployment', 'debt', 'exchange', 'current_account', 'fiscal_balance', 'reserves', 'fdi_inflows'];
 	const country = url.searchParams.get('country');
 	const indicator = url.searchParams.get('indicator') ?? 'inflation';
 
