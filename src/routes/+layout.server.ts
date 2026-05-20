@@ -3,6 +3,7 @@ import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ request, url, platform }) => {
 	if (url.pathname === '/login') return {};
+	if (url.pathname.startsWith('/api/')) return {};
 
 	// Skip auth in dev when platform bindings are unavailable
 	if (!platform?.env?.SESSIONS) {
