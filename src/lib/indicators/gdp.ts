@@ -6,5 +6,5 @@ export const gdp: IndicatorConfig = {
 	code: 'NY.GDP.PCAP.CD',
 	unit: 'USD',
 	colorHigh: 'good',
-	available: false,
+	available: true,
 };

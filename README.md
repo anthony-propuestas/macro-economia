@@ -40,3 +40,27 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+
+## Indicadores disponibles
+
+| Indicador | World Bank Code | Unidad |
+|-----------|----------------|--------|
+| Inflación | FP.CPI.TOTL.ZG | % |
+| GDP per cápita | NY.GDP.PCAP.CD | USD |
+| Desempleo | SL.UEM.TOTL.ZS | % |
+| Deuda pública | GC.DOD.TOTL.GD.ZS | % |
+| Tipo de cambio | PA.NUS.FCRF | — |
+
+## Comandos
+
+```sh
+npm run dev            # servidor de desarrollo
+npm run dev:cf         # desarrollo con Cloudflare Workers local
+npm run build          # build de producción
+npm run preview        # preview del build
+npm run check          # type check
+npm run check:watch    # type check en modo watch
+npm run test           # corre tests una vez
+npm run test:watch     # tests en modo watch
+npm run deploy         # build + deploy a Cloudflare Pages
+```

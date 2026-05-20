@@ -6,5 +6,5 @@ export const exchange: IndicatorConfig = {
 	code: 'PA.NUS.FCRF',
 	unit: '',
 	colorHigh: 'bad',
-	available: false,
+	available: true,
 };

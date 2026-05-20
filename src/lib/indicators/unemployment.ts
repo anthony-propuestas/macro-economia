@@ -6,5 +6,5 @@ export const unemployment: IndicatorConfig = {
 	code: 'SL.UEM.TOTL.ZS',
 	unit: '%',
 	colorHigh: 'bad',
-	available: false,
+	available: true,
 };

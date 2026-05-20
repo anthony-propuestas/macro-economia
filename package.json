@@ -11,7 +11,9 @@
 		"deploy": "npm run build && wrangler pages deploy .svelte-kit/cloudflare",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test": "vitest run",
+		"test:watch": "vitest"
 	},
 	"dependencies": {
 		"chart.js": "^4.4.0",
@@ -26,10 +28,12 @@
 		"@types/d3": "^7.4.0",
 		"@types/topojson-client": "^3.1.0",
 		"@types/topojson-specification": "^1.0.0",
+		"jsdom": "^29.1.1",
 		"svelte": "^5.55.2",
 		"svelte-check": "^4.4.6",
 		"typescript": "^6.0.2",
 		"vite": "^8.0.7",
+		"vitest": "^4.1.6",
 		"wrangler": "^4.92.0"
 	}
 }

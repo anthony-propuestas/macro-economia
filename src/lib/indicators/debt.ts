@@ -6,5 +6,5 @@ export const debt: IndicatorConfig = {
 	code: 'GC.DOD.TOTL.GD.ZS',
 	unit: '%',
 	colorHigh: 'bad',
-	available: false,
+	available: true,
 };
