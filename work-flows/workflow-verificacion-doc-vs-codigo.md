@@ -29,6 +29,7 @@ Si ningún `.md` aparece en el output, este workflow no aplica — commitear nor
 | Documento modificado | Código que debe reflejar |
 |---|---|
 | `README.md` | `package.json` (scripts), `wrangler.toml` (bindings, cron), `schema.sql`, `functions/api/` |
+| `docs/INDICATORS.md` | `src/lib/indicators/index.ts`, `src/lib/server/fetchIMFIndicator.ts`, `src/lib/server/fetchOECDIndicator.ts` |
 | `work-flows/agregar-nuevo-modulo.md` | Proceso real de agregar un indicador: `src/lib/indicators/`, `functions/api/cron/fetch-data.ts`, `functions/api/macro.ts` |
 | `work-flows/workflow-documentacion.md` | Los archivos que realmente existen y hay que mantener |
 | `work-flows/workflow-tests-post-cambio.md` | El estado real de tests en el proyecto |

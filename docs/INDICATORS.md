@@ -9,8 +9,8 @@ Referencia completa de qué indicadores existen, de qué API provienen, y los pa
 | API | Indicadores que provee | Requiere clave | Estado |
 |---|---|---|---|
 | World Bank Open Data | inflation, gdp, unemployment, debt, exchange | No | Activa |
-| IMF DataMapper | current_account, fiscal_balance, reserves | No | Activa |
-| OECD Statistics (SDMX) | fdi_inflows | No | Activa |
+| IMF DataMapper | current_account, fiscal_balance, reserves | No | No integrada |
+| OECD Statistics (SDMX) | fdi_inflows | No | No integrada |
 
 ---
 

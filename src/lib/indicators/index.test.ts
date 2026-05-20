@@ -21,4 +21,10 @@ describe('indicators config', () => {
 			expect(indicatorMap.get(id)?.available).toBe(true);
 		}
 	});
+
+	it('current_account, fiscal_balance, reserves, fdi_inflows están disponibles', () => {
+		for (const id of ['current_account', 'fiscal_balance', 'reserves', 'fdi_inflows']) {
+			expect(indicatorMap.get(id)?.available).toBe(true);
+		}
+	});
 });

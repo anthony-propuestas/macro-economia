@@ -43,13 +43,17 @@ You can preview the production build with `npm run preview`.
 
 ## Indicadores disponibles
 
-| Indicador | World Bank Code | Unidad |
-|-----------|----------------|--------|
-| Inflación | FP.CPI.TOTL.ZG | % |
-| GDP per cápita | NY.GDP.PCAP.CD | USD |
-| Desempleo | SL.UEM.TOTL.ZS | % |
-| Deuda pública | GC.DOD.TOTL.GD.ZS | % |
-| Tipo de cambio | PA.NUS.FCRF | — |
+| Indicador | Código | Unidad | Fuente |
+|-----------|--------|--------|--------|
+| Inflación | FP.CPI.TOTL.ZG | % | World Bank |
+| GDP per cápita | NY.GDP.PCAP.CD | USD | World Bank |
+| Desempleo | SL.UEM.TOTL.ZS | % | World Bank |
+| Deuda pública | GC.DOD.TOTL.GD.ZS | % | World Bank |
+| Tipo de cambio | PA.NUS.FCRF | — | World Bank |
+| Cuenta corriente | BN.CAB.XOKA.GD.ZS | % PIB | World Bank |
+| Balance fiscal | GC.NLD.TOTL.GD.ZS | % PIB | World Bank |
+| Reservas internacionales | FI.RES.TOTL.MO | meses | World Bank |
+| IED entradas netas | BX.KLT.DINV.CD.WD | USD | World Bank |
 
 ## Comandos
 
