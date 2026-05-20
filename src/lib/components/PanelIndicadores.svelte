@@ -5,6 +5,8 @@
 		active?: string;
 		onChange?: (indicator: string) => void;
 	} = $props();
+
+	const activeIndicator = $derived(indicators.find((i) => i.id === active));
 </script>
 
 <div class="panel">
@@ -28,6 +30,9 @@
 			</li>
 		{/each}
 	</ul>
+	{#if activeIndicator}
+		<p class="description">{activeIndicator.description}</p>
+	{/if}
 </div>
 
 <style>
@@ -82,5 +87,14 @@
 		border: 1px solid var(--border);
 		padding: 0.1rem 0.3rem;
 		border-radius: 3px;
+	}
+
+	.description {
+		margin-top: 0.75rem;
+		padding: 0.6rem 0.5rem;
+		font-size: 0.78rem;
+		line-height: 1.5;
+		color: var(--text-muted);
+		border-top: 1px solid var(--border);
 	}
 </style>

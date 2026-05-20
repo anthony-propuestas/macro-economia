@@ -1,6 +1,7 @@
 export interface IndicatorConfig {
 	id: string;
 	label: string;
+	description: string;
 	code: string;
 	unit: string;
 	colorHigh: 'bad' | 'good';

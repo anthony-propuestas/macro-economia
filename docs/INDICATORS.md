@@ -8,9 +8,9 @@ Referencia completa de qué indicadores existen, de qué API provienen, y los pa
 
 | API | Indicadores que provee | Requiere clave | Estado |
 |---|---|---|---|
-| World Bank Open Data | inflation, gdp, unemployment, debt, exchange | No | Activa |
-| IMF DataMapper | current_account, fiscal_balance, reserves | No | No integrada |
-| OECD Statistics (SDMX) | fdi_inflows | No | No integrada |
+| World Bank Open Data | inflation, gdp, unemployment, debt, exchange, current_account, fiscal_balance, reserves, fdi_inflows | No | Activa |
+| IMF DataMapper | — | No | No integrada |
+| OECD Statistics (SDMX) | — | No | No integrada |
 
 ---
 
@@ -151,66 +151,88 @@ Definidos en `src/lib/indicators/` e importados en `src/lib/indicators/index.ts`
 | `unemployment` | Desempleo | `SL.UEM.TOTL.ZS` | `%` | Malo | World Bank | `unemployment.ts` |
 | `debt` | Deuda/PIB | `GC.DOD.TOTL.GD.ZS` | `%` | Malo | World Bank | `debt.ts` |
 | `exchange` | Tipo de cambio | `PA.NUS.FCRF` | `LCU/USD` | Malo | World Bank | `exchange.ts` |
-| `current_account` | Cuenta corriente | `BCA_NGDPD` | `% PIB` | Bueno | IMF | `current-account.ts` |
-| `fiscal_balance` | Balance fiscal | `GGXCNL_NGDP` | `% PIB` | Bueno | IMF | `fiscal-balance.ts` |
-| `reserves` | Reservas internacionales | `Reserves_M` | `meses` | Bueno | IMF | `reserves.ts` |
-| `fdi_inflows` | IED entradas netas | `OECD.DAF.INV,...` | `M USD` | Bueno | OECD | `fdi-inflows.ts` |
+| `current_account` | Cuenta corriente | `BN.CAB.XOKA.GD.ZS` | `% PIB` | Bueno | World Bank | `current-account.ts` |
+| `fiscal_balance` | Balance fiscal | `GC.NLD.TOTL.GD.ZS` | `% PIB` | Bueno | World Bank | `fiscal-balance.ts` |
+| `reserves` | Reservas internacionales | `FI.RES.TOTL.MO` | `meses` | Bueno | World Bank | `reserves.ts` |
+| `fdi_inflows` | IED entradas netas | `BX.KLT.DINV.CD.WD` | `USD` | Bueno | World Bank | `fdi-inflows.ts` |
 
 ### Detalles por indicador
 
 #### `inflation` — Inflación (FP.CPI.TOTL.ZG)
-- **Descripción WB:** Variación anual del Índice de Precios al Consumidor (IPC).
+- **Qué mide:** El aumento generalizado del nivel de precios de bienes y servicios en un año. Un valor de 5 significa que lo que costaba 100 al inicio del año cuesta 105 al final.
+- **Fórmula:** `(IPC_año_actual / IPC_año_anterior − 1) × 100`
+- **API provee calculado:** Sí. World Bank entrega directamente la variación % anual; no se requiere procesar el IPC bruto.
 - **Cobertura típica:** ~155–170 países.
 - **Lag habitual:** 1–2 años. Muchos países reportan con retraso.
 - **Notas:** Valores extremos posibles en economías con hiperinflación.
 
 #### `gdp` — PIB per cápita (NY.GDP.PCAP.CD)
-- **Descripción WB:** PIB dividido por la población a mitad de año, en dólares corrientes.
+- **Qué mide:** El valor de todos los bienes y servicios producidos en un país dividido entre su población. Proxy del nivel de vida material promedio.
+- **Fórmula:** `PIB_total_USD / Población_midyear`
+- **API provee calculado:** Sí. World Bank entrega el cociente final en USD corrientes.
 - **Cobertura típica:** ~185–195 países. Es el indicador con mayor cobertura.
 - **Lag habitual:** 1–2 años.
 - **Notas:** Expresado en USD corrientes (no ajustado por PPP).
 
 #### `unemployment` — Desempleo (SL.UEM.TOTL.ZS)
-- **Descripción WB:** Porcentaje de la fuerza laboral sin empleo (modelo OIT).
+- **Qué mide:** Porcentaje de la fuerza laboral activa que busca trabajo pero no lo tiene. No incluye personas que dejaron de buscar (desempleo oculto).
+- **Fórmula:** `Desempleados / (Empleados + Desempleados) × 100`
+- **API provee calculado:** Sí. World Bank entrega el % final basado en estimaciones modeladas de la OIT.
 - **Cobertura típica:** ~140–160 países. Menor cobertura por dificultad de medición.
 - **Lag habitual:** 1–3 años. Algunos países actualizan con retraso importante.
 - **Notas:** Estimaciones modeladas para países sin encuestas laborales recientes.
 
 #### `debt` — Deuda/PIB (GC.DOD.TOTL.GD.ZS)
-- **Descripción WB:** Deuda bruta del gobierno central como porcentaje del PIB.
+- **Qué mide:** Cuánto debe el gobierno central en relación con el tamaño de su economía. Un 60 % significa que la deuda equivale a 7 meses del PIB anual.
+- **Fórmula:** `Deuda_bruta_gobierno_central_USD / PIB_USD × 100`
+- **API provee calculado:** Sí. World Bank entrega directamente el ratio porcentual.
 - **Cobertura típica:** ~100–130 países. Cobertura más baja por disponibilidad de datos fiscales.
 - **Lag habitual:** 2–3 años.
 - **Notas:** Solo deuda del gobierno central, no incluye empresas estatales ni deuda subnacional.
 
 #### `exchange` — Tipo de cambio (PA.NUS.FCRF)
-- **Descripción WB:** Unidades de moneda local por 1 USD, tipo de cambio oficial promedio anual.
+- **Qué mide:** Cuántas unidades de moneda local se necesitan para comprar 1 dólar estadounidense, promediado durante el año. Refleja el precio relativo de las monedas.
+- **Fórmula:** Promedio ponderado del tipo de cambio oficial durante el año calendario.
+- **API provee calculado:** Sí. World Bank entrega el promedio anual directamente.
 - **Cobertura típica:** ~155–175 países.
 - **Lag habitual:** 1–2 años.
 - **Notas:** No aplica para países que usan el dólar (USD) como moneda oficial; esos registros pueden aparecer como `null` o `1`.
 
-#### `current_account` — Cuenta corriente (BCA_NGDPD)
-- **Descripción IMF:** Saldo de la cuenta corriente de la balanza de pagos, como porcentaje del PIB.
-- **Cobertura típica:** ~190 países (miembros del FMI).
-- **Lag habitual:** 1 año. Publicado con el WEO (abril/octubre).
+#### `current_account` — Cuenta corriente (BN.CAB.XOKA.GD.ZS)
+- **Qué mide:** Si un país vende al exterior más de lo que compra (superávit) o lo contrario (déficit), incluyendo bienes, servicios, rentas y transferencias, como porcentaje del PIB.
+- **Fórmula:** `(Exportaciones − Importaciones + Renta_neta + Transferencias_netas) / PIB × 100`
+- **API provee calculado:** Sí. World Bank entrega el ratio % del PIB directamente.
+- **Fuente:** World Bank (`BN.CAB.XOKA.GD.ZS`), no IMF.
+- **Cobertura típica:** ~140–160 países.
+- **Lag habitual:** 1–2 años.
 - **Notas:** Positivo = superávit (el país exporta más de lo que importa + transferencias). Negativo = déficit.
 
-#### `fiscal_balance` — Balance fiscal del gobierno (GGXCNL_NGDP)
-- **Descripción IMF:** Balance fiscal neto del gobierno general como porcentaje del PIB.
-- **Cobertura típica:** ~190 países.
-- **Lag habitual:** 1–2 años.
-- **Notas:** Positivo = superávit fiscal. Negativo = déficit. Incluye gobierno central, regional y local.
+#### `fiscal_balance` — Balance fiscal del gobierno (GC.NLD.TOTL.GD.ZS)
+- **Qué mide:** Si el gobierno gasta más de lo que ingresa (déficit) o menos (superávit), como porcentaje del PIB. Es el "saldo" de las cuentas públicas en un año.
+- **Fórmula:** `(Ingresos_gobierno − Gastos_gobierno) / PIB × 100`
+- **API provee calculado:** Sí. World Bank entrega el ratio % del PIB directamente.
+- **Fuente:** World Bank (`GC.NLD.TOTL.GD.ZS`), no IMF.
+- **Cobertura típica:** ~100–130 países.
+- **Lag habitual:** 2–3 años.
+- **Notas:** Positivo = superávit fiscal. Negativo = déficit. Cubre solo gobierno central.
 
-#### `reserves` — Reservas internacionales en meses de importación (Reserves_M)
-- **Descripción IMF:** Reservas internacionales totales expresadas en meses de importaciones de bienes y servicios.
-- **Cobertura típica:** ~180 países.
-- **Lag habitual:** 1 año.
+#### `reserves` — Reservas internacionales en meses de importación (FI.RES.TOTL.MO)
+- **Qué mide:** Cuántos meses podría el país pagar sus importaciones usando solo sus reservas internacionales (divisas + oro + derechos especiales de giro). Indica capacidad de respuesta ante crisis externas.
+- **Fórmula:** `Reservas_internacionales_USD / (Importaciones_anuales_USD / 12)`
+- **API provee calculado:** Sí. World Bank entrega el valor en meses directamente; no hay que dividir reservas brutas.
+- **Fuente:** World Bank (`FI.RES.TOTL.MO`), no IMF.
+- **Cobertura típica:** ~150–170 países.
+- **Lag habitual:** 1–2 años.
 - **Notas:** Un valor ≥ 3 meses se considera adecuado (regla de thumb del FMI). Valores muy altos (~12+) en países exportadores de commodities con fondos soberanos.
 
-#### `fdi_inflows` — IED entradas netas (OECD FDI Aggregates)
-- **Descripción OECD:** Inversión Extranjera Directa (IED) entradas netas provenientes del mundo, en millones de USD.
-- **Cobertura típica:** ~38 países OCDE + algunos socios. **Mapa mundial quedará vacío para no-miembros.**
+#### `fdi_inflows` — IED entradas netas (BX.KLT.DINV.CD.WD)
+- **Qué mide:** Cuánto capital extranjero entra al país como inversión de largo plazo (fábricas, empresas, participaciones ≥10 %), neto de las salidas. En USD corrientes.
+- **Fórmula:** `IED_entradas_brutas_USD − IED_salidas_brutas_USD`
+- **API provee calculado:** Sí. World Bank entrega el neto en USD directamente.
+- **Fuente:** World Bank (`BX.KLT.DINV.CD.WD`), no OECD.
+- **Cobertura típica:** ~170–185 países.
 - **Lag habitual:** 1–2 años.
-- **Notas:** Valores absolutos en M USD, no como % del PIB. Útil para comparar volumen de atracción de inversión. El valor puede ser negativo (desinversión neta).
+- **Notas:** Valor en USD corrientes (no % PIB). Puede ser negativo (desinversión neta: los inversores extranjeros retiran más capital del que invierten).
 
 ---
 
@@ -263,15 +285,13 @@ POST /api/cron/fetch-data
 
 ## Routing de fetchers en el cron
 
-El campo `api` en `IndicatorJob` determina qué fetcher se usa:
+Actualmente `functions/api/cron/fetch-data.ts` usa `fetchIndicator` (World Bank) para los 9 indicadores. Los fetchers de IMF y OECD existen en el código pero no están conectados al cron.
 
-| `api` | Fetcher | Archivo |
+| Fetcher | Estado | Archivo |
 |---|---|---|
-| `'world_bank'` (default) | `fetchIndicator` | `src/lib/server/fetchIndicator.ts` |
-| `'imf'` | `fetchIMFIndicator` | `src/lib/server/fetchIMFIndicator.ts` |
-| `'oecd'` | `fetchOECDIndicator` | `src/lib/server/fetchOECDIndicator.ts` |
-
-La función `runOne(job, db)` en los archivos de cron despacha al fetcher correcto.
+| `fetchIndicator` (World Bank) | Activo — usado por los 9 indicadores | `src/lib/server/fetchIndicator.ts` |
+| `fetchIMFIndicator` | Implementado, no conectado al cron | `src/lib/server/fetchIMFIndicator.ts` |
+| `fetchOECDIndicator` | Implementado, no conectado al cron | `src/lib/server/fetchOECDIndicator.ts` |
 
 ---
 
