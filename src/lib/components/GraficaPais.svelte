@@ -74,11 +74,10 @@
 		<div class="state">Cargando…</div>
 	{:else if error}
 		<div class="state error">{error}</div>
-	{:else}
-		<div class="chart-wrap">
-			<canvas bind:this={canvas}></canvas>
-		</div>
 	{/if}
+	<div class="chart-wrap" style:display={loading || error ? 'none' : undefined}>
+		<canvas bind:this={canvas}></canvas>
+	</div>
 </div>
 
 <style>
